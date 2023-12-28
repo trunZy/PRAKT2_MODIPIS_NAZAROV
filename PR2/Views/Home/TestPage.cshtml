@@ -1,0 +1,230 @@
+﻿@model TestPageModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-container {
+            width: 50%;
+            padding-right: 20px;
+        }
+
+        .table-container {
+            width: 50%;
+            overflow: auto;
+        }
+    </style>
+</head>
+<div class="text-center">
+    <div class="container">
+        <div class="form-group">
+            <h2>Расчет теплообмена в противоточном движении кусковых материалов и газов в плотном продуваемом слое:</h2>
+        </div>
+    </div>
+    <br />
+</div>
+
+<body>
+    <div class="container">
+        <div class="input-container">
+            <h5><b>Введите свои данные для рассчета:</b></h5>
+            <br>
+            <form action="/Home/TestPage/" method="post">
+                <div class="mb-0">
+                    <label for="H" class="form-label">Высота слоя, м:</label>
+                    <input name="H" class="form-control" id="H" value="@Model.InputData?.H" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="T_MAT" class="form-label">Начальная температура материала, °С:</label>
+                    <input name="T_MAT" class="form-control" id="t_material" value="@Model.InputData?.T_MAT" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="T_GAS" class="form-label">Начальная температура газа, °С:</label>
+                    <input name="T_GAS" class="form-control" id="t_gas" value="@Model.InputData?.T_GAS" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="V_GAS" class="form-label">Скорость газа на свободное сечение шахты, м/с:</label>
+                    <input name="V_GAS" class="form-control" id="v_gas" value="@Model.InputData?.V_GAS" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="C_GAS" class="form-label">Средняя теплоемкость газа, кДж/(м3 • К):</label>
+                    <input name="C_GAS" class="form-control" id="c_gas" value="@Model.InputData?.C_GAS" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="Rashod" class="form-label">Расход материалов, кг/с:</label>
+                    <input name="Rashod" class="form-control" id="consum" value="@Model.InputData?.Rashod" style="width: 615px;" />
+                </div>
+                <div class="mb-0">
+                    <label for="C_MAT" class="form-label">Теплоемкость материалов, кДж:</label>
+                    <input name="C_MAT" class="form-control" id="c_material" value="@Model.InputData?.C_MAT" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="koefficient" class="form-label">Объемный коэффициент теплоотдачи, Вт/(м3 • К):</label>
+                    <input name="koefficient" class="form-control" id="koef" value="@Model.InputData?.koefficient" style="width: 615px;" />
+                </div>
+
+                <div class="mb-0">
+                    <label for="D_ap" class="form-label">Диаметр аппарата, м:</label>
+                    <input name="D_ap" class="form-control" id="diam" value="@Model.InputData?.D_ap" style="width: 615px;" />
+                </div>
+                <div class="mb-0">
+                    <label for="name" class="form-label">Введите название для сохранения расчёта:</label>
+                    <input name="name" class="form-control" id="name" value="" />
+                </div>
+                <br />
+                <div>
+                    <input type="submit" value="Рассчитать" class="btn btn-primary" />
+                </div>
+
+            </form>
+        </div>
+        <br /><br /><br /><br /><br />
+        <style>
+            .custom-table {
+                background-color: #f2f2f2; /* Set the desired background color */
+            }
+
+                .custom-table td.bold-text {
+                    font-weight: bold;
+                }
+        </style>
+        <div class="table-container">
+            
+            @if (Model.OutputData != null)
+            {
+                    <table style="background-color: white;" class="table table-hover table-bordered custom-table">
+                    <tr>
+                        <td class="bold-text text-center">Высота слоя, м</td>
+                        @foreach (var number in Model.OutputData.Rows)
+                        {
+                            <td class="bold-text text-center">@number.X</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="bold-text text-center">t,°C</td>
+                        @foreach (var number in Model.OutputData.Rows)
+                        {
+                            <td class="text-center">@number.tmal</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="bold-text text-center">T,°C</td>
+                        @foreach (var number in Model.OutputData.Rows)
+                        {
+                            <td class="text-center">@number.TBOL</td>
+                        }
+                    </tr>
+                    <tr>
+                        <td class="bold-text text-center">Разность |T-t|,°C</td>
+                        @foreach (var number in Model.OutputData.Rows)
+                        {
+                            <td class="text-center">@number.RASN_T_t</td>
+                        }
+                    </tr>
+                </table>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <div>
+                    <canvas id="myChart"></canvas>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+@{
+    var outputData = Model.OutputData;
+    var labels = outputData?.Rows?.Select(x => x.X).ToList() ?? new List<double>();
+    var tmalData = outputData?.Rows?.Select(x => x.tmal).ToList() ?? new List<double>();
+    var TntData = outputData?.Rows?.Select(x => x.RASN_T_t).ToList() ?? new List<double>();
+    var TbolData = outputData?.Rows?.Select(x => x.TBOL).ToList() ?? new List<double>();
+    var jsonLabels = Json.Serialize(labels);
+    var jsonTmalData = Json.Serialize(tmalData);
+    var jsonTntData = Json.Serialize(TntData);
+    var jsonTbolData = Json.Serialize(TbolData);
+}
+
+<script>
+    const labels = @Html.Raw(jsonLabels);
+    const tmalData = @Html.Raw(jsonTmalData);
+    const TntData = @Html.Raw(jsonTntData);
+    const tbolData = @Html.Raw(jsonTbolData);
+
+    // Get the last label separately
+    const lastLabel = labels[labels.length - 1];
+    const lastTmalData = tmalData[labels.length - 1];
+    const lastTntData = TntData[labels.length - 1];
+    const lastTbolData = tbolData[labels.length - 1];
+
+    // Add the last data points to match the last label
+    tmalData.push(lastTmalData);
+    TntData.push(lastTntData);
+    tbolData.push(lastTbolData);
+
+    const ctx = document.getElementById('myChart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: ' t,°C ',
+                    data: tmalData,
+                    borderWidth: 1
+                },
+                
+                {
+                    label: ' T,°C ',
+                    data: tbolData,
+                    borderWidth: 1
+                },
+                {
+                    label: 'Разность температур |T-t|,°C',
+                    data: TntData,
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Высота слоя, м'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Температура, °C'
+                    }
+                }
+            }
+        }
+    });
+</script>

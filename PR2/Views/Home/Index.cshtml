@@ -1,0 +1,48 @@
+﻿@model List<InputData>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">История, для @(User.Identity?.Name ?? "guest")</h1>
+</div>
+
+<table class="table table-hover table-bordered custom-table">
+    <tr>
+        <th>id</th>
+        <th>Высота слоя, м</th>
+        <th>Начальная температура материала, °С</th>
+        <th>Начальная температура газа, °С</th>
+        <th>Скорость газа на свободное сечение шахты, м/с</th>
+        <th>Средняя теплоемкость газа, кДж/(м3 • К)</th>
+        <th>Расход материалов кг/с</th>
+        <th>Теплоемкость материалов, кДж/(кг • К)</th>
+        <th>Объемный коэффициент теплоотдачи, Вт/(м3 • К)</th>
+        <th>Диаметр аппарата, м</th>
+        <th>Дата расчёта (чч.мм.гг.вр)</th>
+        <th></th>
+
+    </tr>
+
+        @foreach (var inputData in Model)
+        {
+            <tr> 
+                <td>@inputData.id</td>
+                <td>@inputData.H</td>
+                <td>@inputData.T_MAT</td>
+                <td>@inputData.T_GAS</td>
+                <td>@inputData.V_GAS</td>
+                <td>@inputData.C_GAS</td>
+                <td>@inputData.Rashod</td>
+                <td>@inputData.C_MAT</td>
+                <td>@inputData.koefficient</td>
+                <td>@inputData.D_ap</td>
+                <td>@inputData.DateAdd</td>
+                <td>
+                    <a href="/Home/TestPage/?variant=@inputData.id">Открыть</a>
+                    <a href="/Home/Delete/?id=@inputData.id">Удалить</a>
+                    </td>
+            </tr>
+  
+        }
+</table>
